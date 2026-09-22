@@ -3,29 +3,35 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class User(BaseModel):
-    id:int
-    name:str
+    id: int
+    name: str
+
 
 class UserUpdate(BaseModel):
     name: str
 
-users= []
+
+users = []
+
 
 @app.get("/users")
 def get_users():
     return users
 
+
 @app.post("/users")
-def create_user(user:User):
+def create_user(user: User):
     users.append(user)
     return user
+
 
 @app.put("/users/{id}")
 def update_user(id: int, user: UserUpdate):
     for eachuser in users:
-        if eachuser["id"] == id:
-            eachuser.update(user)
+        if eachuser.id == id:
+            eachuser.name = user.name
             return eachuser
 
     return {"error": "Usuario no encontrado"}
@@ -34,7 +40,7 @@ def update_user(id: int, user: UserUpdate):
 @app.delete("/users/{id}")
 def delete_user(id: int):
     for user in users:
-        if user["id"] == id:
+        if user.id == id:
             users.remove(user)
             return {"message": "Usuario eliminado correctamente"}
 
